@@ -25,21 +25,26 @@ gu_list = ['강남구',
            '종로구',
            '중구',
            '중랑구']
-dest_file = open(f'/Users/ny/Downloads/finedust_dataset/data.csv', 'w')
-writer = csv.writer(dest_file)
-writer.writerow(['location', 'time', 'PM10', 'SO2', 'CO', 'O3', 'NO2', 'temp', 'deg_sin', 'deg_cos', 'spd', 'rain', 'humi'])
 
-for gu in gu_list:
+vectors = [[1 if i == j else 0 for j in range(25)] for i in range(25)]
+
+dest_file = open(f'/Users/ny/Downloads/finedust_dataset/one_hot_encoded_data.csv', 'w')
+writer = csv.writer(dest_file)
+writer.writerow([i for i in range(1, 26)] + ['time', 'PM10', 'SO2', 'CO', 'O3', 'NO2', 'temp', 'deg_sin', 'deg_cos', 'spd', 'rain', 'humi'])
+
+for i in range(25):
+    gu = gu_list[i]
+    vector = vectors[i]
     try:
         source_file = open(f'/Users/ny/Downloads/finedust_dataset/data_{gu}.csv')
     except FileNotFoundError:
-        pass
+        print('File Not Found')
 
     reader = csv.reader(source_file)
     lines = list(reader)[1:]
 
     for line in lines:
-        writer.writerow([gu] + line)
+        writer.writerow(vector + line)
 
     source_file.close()
 
